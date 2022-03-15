@@ -2,11 +2,11 @@ GCC=gcc
 
 .PHONY: run clean
 
-build: main.c
-	gcc $< -o $@ &
+build: ./src/main.c
+	gcc $< -o ./src/$@ &
 
 run: 
-	./build
+	src/build
 
 clean:
-	rm build
+	rm scr/build
