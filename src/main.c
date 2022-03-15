@@ -12,7 +12,7 @@ void in_qtd(){
 	scanf("%d", &qtd_in);
 }
 
-int in_values(){
+void* in_values(void *args){
 	//Extract values
 	in_qtd();
 
@@ -34,45 +34,75 @@ int in_values(){
 	}
 }
 
-int average(){
+void* average(void *args){
 	int sum = 0;
 	int mean = 0;
 	for(int i=0; i < qtd_in; i++){
-		sum+=values[i];
+		sum += values[i];
 	}
 	mean = sum/qtd_in;
-	return mean;
+	printf("The average value is %d\n", mean);
 }
 
 
-int minimum(){
-	return 0;
+void* minimum(void *args){
+	int minimumAct = values[0];
+
+	for(int i=0; i < qtd_in; i++){
+		if (minimumAct >= values[i]){
+			minimumAct = values[i];
+		}
+	}
+	printf("The minimum value is %d\n", minimumAct);
 }
 
-int maximum(){
-	return 0;
+void* maximum(void *args){
+	int maximumAct = values[0];
+
+	for(int i=0; i < qtd_in; i++){
+		if (maximumAct <= values[i]){
+			maximumAct = values[i];
+		}
+	}
+	printf("The maximum value is %d\n", maximumAct);
+}
+
+void makeThreads(){
+	pthread_create(&(threads[0]), NULL, in_values, (void *)(&(threads[0])));
+	pthread_create(&(threads[1]), NULL, average, (void *)(&(threads[1])));
+	pthread_create(&(threads[2]), NULL, minimum, (void *)(&(threads[2])));
+	pthread_create(&(threads[3]), NULL, maximum, (void *)(&(threads[3])));
+}
+
+void runThreads(){
+	for (int i = 0; i < QTD_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
 }
 
 int main(){
 	
 	//first thread
-	in_values();
+	// in_values();
 
 	//second thread
-	int averageResult = average();
-	printf("The average value is %d\n", averageResult);
+	// int averageResult = average();
+	// printf("The average value is %d\n", averageResult);
 
 	//thierd
-	int mininumResult = minimum();
-	printf("The minimum value is %d\n", mininumResult);
+	// int mininumResult = minimum();
+	// printf("The minimum value is %d\n", mininumResult);
 
 	//fourt
-	int maximumResult = maximum();
-	printf("The maximum value is %d\n", maximumResult);
+	// int maximumResult = maximum();
+	// printf("The maximum value is %d\n", maximumResult);
 
 	// for (int i=0; i < qtd_in; i++){
 	// 	printf("%d\n",values[i]);
 	// }
+
+	makeThreads();
+	runThreads();
 
 
 	free(values);
