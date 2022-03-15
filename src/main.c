@@ -2,17 +2,19 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#define QTD_THREADS 4
+#define QTD_THREADS 3
 
 int* values;
 int qtd_in = 0;
 pthread_t threads[QTD_THREADS];
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 void in_qtd(){
 	scanf("%d", &qtd_in);
 }
 
-void* in_values(void *args){
+void in_values(){
+	// pthread_mutex_lock(&lock);
 	//Extract values
 	in_qtd();
 
@@ -32,6 +34,8 @@ void* in_values(void *args){
 			break;
 		}
 	}
+
+	// pthread_mutex_unlock(&lock);
 }
 
 void* average(void *args){
@@ -68,16 +72,15 @@ void* maximum(void *args){
 }
 
 void makeThreads(){
-	pthread_create(&(threads[0]), NULL, in_values, (void *)(&(threads[0])));
-	pthread_create(&(threads[1]), NULL, average, (void *)(&(threads[1])));
-	pthread_create(&(threads[2]), NULL, minimum, (void *)(&(threads[2])));
-	pthread_create(&(threads[3]), NULL, maximum, (void *)(&(threads[3])));
+	pthread_create(&(threads[0]), NULL, average, NULL);
+	pthread_create(&(threads[1]), NULL, minimum, NULL);
+	pthread_create(&(threads[2]), NULL, maximum, NULL);
 }
 
 void runThreads(){
-	for (int i = 0; i < QTD_THREADS; i++) {
-        pthread_join(threads[i], NULL);
-    }
+	pthread_join(threads[0], NULL);
+	pthread_join(threads[1], NULL);
+	pthread_join(threads[2], NULL);
 }
 
 int main(){
@@ -100,6 +103,8 @@ int main(){
 	// for (int i=0; i < qtd_in; i++){
 	// 	printf("%d\n",values[i]);
 	// }
+
+	in_values();
 
 	makeThreads();
 	runThreads();
