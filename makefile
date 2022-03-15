@@ -9,4 +9,4 @@ run:
 	src/build
 
 clean:
-	rm scr/build
+	rm src/build
